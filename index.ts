@@ -17,7 +17,7 @@ import ValidatorStudentRegistration, { InputValidatorStudentRegistration } from 
 import MatriculaRepositoryDatabase from './src/infra/repository/database/MatriculaRepositoryDatabase';
 import StudentRepositoryDatabase from './src/infra/repository/database/StudentRepositoryDatabase';
 
-const mysqlConnection = new MysqlConnection('localhost', 'root', 'root', 'escolas');
+const mysqlConnection = new MysqlConnection('localhost', 'root', 'root', 'escolas_');
 
 app.post('/enrollStudent', async function (req: any, res: any) {
     const studentRepository = new StudentRepositoryDatabase(mysqlConnection);
