@@ -11,7 +11,7 @@ export default class EnrollStudent {
     async execute(alunoId:string) {
         let student = await this.studentRepository.get(alunoId);
         if (!student) throw new Error("not found student");
-        student = Student.create(student.nome, student.email, student.docBI);
+        student = await Student.create(student.nome, student.email, student.docBI, student.getPassword());
         const enroll = Matricula.create(student.uuid);
         this.matriculaRepository.save(enroll);
     }
