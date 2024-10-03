@@ -1,9 +1,7 @@
 import * as express from 'express';
 const fileUpload = require('express-fileupload');
-//const verifyToken = require('./src/middleware/auth');
+import auth from './src/middlewares/auth';
 const cors = require('cors');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 
@@ -17,7 +15,7 @@ app.use(cors());
 import MysqlConnection from './src/infra/db/MysqlConnection';
 import EnrollStudent from './src/application/usecase/enroll-student';
 import GetAllStudents from './src/application/usecase/get-all-students';
-import GetStudentAuth from './src/application/usecase/get-student-auth';
+import GetToken from './src/application/usecase/get-token';
 import RegisterStudent, { InputDataRegisterStudent } from './src/application/usecase/register-student';
 import ValidatorStudentRegistration, { InputValidatorStudentRegistration } from './src/application/usecase/validator-student-registration';
 import MatriculaRepositoryDatabase from './src/infra/repository/database/MatriculaRepositoryDatabase';
@@ -28,31 +26,20 @@ const mysqlConnection = new MysqlConnection('localhost', 'root', 'root', 'escola
 app.post('/login', async function (req: any, res: any) {
     try {
         const studentRepository = new StudentRepositoryDatabase(mysqlConnection);
-        const getStudent = new GetStudentAuth(studentRepository);
+        const getToken = new GetToken(studentRepository);
         const { email, password } = req.body;
-        const student = await getStudent.execute(email);
-        if (!student) {
-            return res.status(401).json({ error: 'Authentication failed' });
-        }
-        const passwordMatch = await bcrypt.compare(password, student.getPassword());
-        if (!passwordMatch) {
-            return res.status(401).json({ error: 'Authentication failed' });
-        }
-        const token = jwt.sign({ studentId: student.uuid }, process.env.JWT_SECRET, {
-            expiresIn: '1h',
-        });
+        const token = await getToken.execute(email, password);
         res.status(200).json({ token });
     } catch (error) {
         res.status(500).json({ error: 'Login failed' });
     }
-
 })
 app.post('/enrollStudent', async function (req: any, res: any) {
     const studentRepository = new StudentRepositoryDatabase(mysqlConnection);
     const matriculaRepository = new MatriculaRepositoryDatabase(mysqlConnection);
     const enrollStudent = new EnrollStudent(studentRepository, matriculaRepository);
     enrollStudent.execute(req.body.aluno_id);
-    res.json({ success: 'sucess' })
+    res.json({ success: 'sucess' });
 })
 app.get('/getAllStudents', async function (req: any, res: any) {
     const studentRepository = new StudentRepositoryDatabase(mysqlConnection);
@@ -61,7 +48,6 @@ app.get('/getAllStudents', async function (req: any, res: any) {
     res.json(data)
 })
 app.post('/registerStudent', async function (req: any, res: any) {
-
     const studentRepository = new StudentRepositoryDatabase(mysqlConnection);
     const registerStudent = new RegisterStudent(studentRepository);
     const inputDataRegisterStudent: InputDataRegisterStudent = {

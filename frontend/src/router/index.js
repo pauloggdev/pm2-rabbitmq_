@@ -5,25 +5,46 @@ import VueRouter from 'vue-router'
 import Candidatura from '@/components/Candidatura.vue'
 import Login from '@/components/Login.vue'
 import Home from '@/components/Home.vue'
+import NotAuthorized from '@/components/NotAuthorized.vue'
 
 Vue.use(VueRouter)
+
+const requireAuth = (to, from, next) => {
+  const token = localStorage.getItem('token');
+  const isAuthenticated = !!token; // Verifica se o token está no localStorage
+  if (!isAuthenticated) {
+    next({ name: 'Login' });
+  } else {
+    // Se autenticado, permite a navegação
+    next();
+  }
+};
 
 const routes = [
 
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
+    meta: { requiresAuth: true },
+    beforeEnter: requireAuth
   },
   {
     path: '/candidatura',
     name: 'Candidatura',
-    component: Candidatura
+    component: Candidatura,
+    meta: { requiresAuth: true },
+    beforeEnter: requireAuth
   },
   {
     path: '/login',
     name: 'Login',
     component: Login
+  },
+  {
+    path: '/nao-autorizado',
+    name: 'NotAuthorized',
+    component: NotAuthorized // Nova rota para página "Não Autorizado"
   }
 ]
 
