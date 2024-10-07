@@ -31,7 +31,7 @@ app.post('/login', async function (req: any, res: any) {
         const token = await getToken.execute(email, password);
         res.status(200).json({ token });
     } catch (error) {
-        res.status(500).json({ error: 'Login failed' });
+        res.status(500).json({ error: error});
     }
 })
 app.post('/enrollStudent', async function (req: any, res: any) {
@@ -71,9 +71,9 @@ app.put('/validatorStudentRegistration', async function (req: any, res: any) {
     validatorStudent.execute(inputDataValidatorStudent);
     res.json({ success: 'sucess' })
 })
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
 app.listen(PORT, () => {
-    console.log("Rodando o servidor localhost:3000");
+    console.log(`Rodando o servidor localhost:${PORT}`);
 });
 

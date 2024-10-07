@@ -1,5 +1,7 @@
-import Vue from 'vue'
+import Vue from 'vue'//-
 import VueRouter from 'vue-router'
+
+
 
 // Importe os componentes para as rotas
 import Candidatura from '@/components/Candidatura.vue'
@@ -20,6 +22,18 @@ const requireAuth = (to, from, next) => {
   }
 };
 
+const isAuthenticated = (to, from, next) => {
+  const token = localStorage.getItem('token');
+  const isAuthenticated =!!token; 
+  if (isAuthenticated) {
+  
+    next({ name: 'Home' });
+  } else {
+    // Se não autenticado, permite a navegação
+    next();
+  }
+}
+
 const routes = [
 
   {
@@ -39,7 +53,8 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
-    component: Login
+    component: Login,
+    beforeEnter:isAuthenticated
   },
   {
     path: '/nao-autorizado',

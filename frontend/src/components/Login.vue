@@ -19,15 +19,15 @@ export default {
   data(){
     return{
       user:{
-        email:'',
-        password:'',
+        email:'johndoe@gmail.com',
+        password:'123',
       }
     }
   },
   methods:{
     async fazerLogin(){
       try {
-        const response = await axios.post('http://localhost:3000/login', this.user);
+        const response = await axios.post(`http://localhost:3000/login`, this.user);
         if(response.status == 200){
           localStorage.setItem('token', response.data.token);
           this.$router.push({ name: 'Home' });
