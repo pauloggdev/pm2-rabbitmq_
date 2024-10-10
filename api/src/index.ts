@@ -1,6 +1,6 @@
-import * as express from 'express';
+import express from 'express';
 const fileUpload = require('express-fileupload');
-import auth from './src/middlewares/auth';
+import auth from './middlewares/auth';
 const cors = require('cors');
 require('dotenv').config();
 
@@ -12,14 +12,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(fileUpload());
 app.use(cors());
 
-import MysqlConnection from './src/infra/db/MysqlConnection';
-import EnrollStudent from './src/application/usecase/enroll-student';
-import GetAllStudents from './src/application/usecase/get-all-students';
-import GetToken from './src/application/usecase/get-token';
-import RegisterStudent, { InputDataRegisterStudent } from './src/application/usecase/register-student';
-import ValidatorStudentRegistration, { InputValidatorStudentRegistration } from './src/application/usecase/validator-student-registration';
-import MatriculaRepositoryDatabase from './src/infra/repository/database/MatriculaRepositoryDatabase';
-import StudentRepositoryDatabase from './src/infra/repository/database/StudentRepositoryDatabase';
+import MysqlConnection from './infra/db/MysqlConnection';
+import EnrollStudent from './application/usecase/enroll-student';
+import GetAllStudents from './application/usecase/get-all-students';
+import GetToken from './application/usecase/get-token';
+import RegisterStudent, { InputDataRegisterStudent } from './application/usecase/register-student';
+import ValidatorStudentRegistration, { InputValidatorStudentRegistration } from './application/usecase/validator-student-registration';
+import MatriculaRepositoryDatabase from './infra/repository/database/MatriculaRepositoryDatabase';
+import StudentRepositoryDatabase from './infra/repository/database/StudentRepositoryDatabase';
 
 const mysqlConnection = new MysqlConnection('localhost', 'root', 'root', 'escolas_');
 
@@ -42,9 +42,11 @@ app.post('/enrollStudent', async function (req: any, res: any) {
     res.json({ success: 'sucess' });
 })
 app.get('/getAllStudents', async function (req: any, res: any) {
+    const page = parseInt(req.query.page) || 1; 
+    const search = req.query.search || null;
     const studentRepository = new StudentRepositoryDatabase(mysqlConnection);
     const getAllStudents = new GetAllStudents(studentRepository);
-    const data = await getAllStudents.execute();
+    const data = await getAllStudents.execute(page, search);
     res.json(data)
 })
 app.post('/registerStudent', async function (req: any, res: any) {

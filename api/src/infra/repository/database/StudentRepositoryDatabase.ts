@@ -6,21 +6,21 @@ export default class StudentRepositoryDatabase implements StudentRepository {
     constructor(readonly connection: Connection) { }
     async get(uuid: string): Promise<Student> {
         const [student] = await this.connection.query("SELECT * FROM students WHERE uuid = ?", uuid);
-        return new Student(uuid, student.nome, student.email, student.docBI,student.getPassword());
+        return new Student(uuid, student.nome, student.email, student.docBI, student.getPassword());
     }
-    async getStudent(email:string):Promise<any>{
+    async getStudent(email: string): Promise<any> {
         const [student] = await this.connection.query("SELECT * FROM students WHERE email = ?", [
             email
         ]);
-        if(!student) return null;
-        return new Student(student.uuid, student.nome, student.email, student.docBI,student.password);
+        if (!student) return null;
+        return new Student(student.uuid, student.nome, student.email, student.docBI, student.password);
     }
-    async getStudentByEmail(email:string):Promise<any>{
+    async getStudentByEmail(email: string): Promise<any> {
         const [student] = await this.connection.query("SELECT * FROM students WHERE email = ? LIMIT 1", [
             email
         ]);
-        if(!student) return null;
-        return new Student(student.uuid, student.nome, student.email, student.docBI,student.password);
+        if (!student) return null;
+        return new Student(student.uuid, student.nome, student.email, student.docBI, student.password);
     }
     async save(student: Student): Promise<void> {
         this.connection.query("insert into students (uuid, nome, email, docBI, password) values (?,?,?,?,?)", [
@@ -31,13 +31,28 @@ export default class StudentRepositoryDatabase implements StudentRepository {
             student.getPassword()
         ]);
     }
-    async getAll(): Promise<Student[]> {
-        const studentsData = await this.connection.query("SELECT * FROM students", []);
-        const students: Student[] = [];
-        for (let student of studentsData) {
-            students.push(student);
+    async getAll(page: any = 1, search: any = null): Promise<any> {
+        const limit: any = 3;
+        const searchTerm = `%${search}%`;
+        const offset = (page - 1) * limit; // Cálculo do offset
+        const [totalCountRow] = await this.connection.query(`SELECT COUNT(*) as total FROM students`, []);
+        const totalCount = totalCountRow.total;
+        let queryParams = [limit, offset];
+        let query = `SELECT * FROM students`;
+        if (search.letter) {
+            console.log('fdafdafd')
+            query += ` WHERE nome LIKE ?`;
+            queryParams.push(searchTerm);
         }
-        return students;
+        query += ` LIMIT ? OFFSET ?`;
+        console.log(query);
+        const studentsData = await this.connection.query(query, queryParams);
+        const totalPages = Math.ceil(totalCount / limit);
+        return {
+            students: studentsData, // Dados dos estudantes
+            totalPages: totalPages,  // Número total de páginas
+            currentPage: page        // Página atual
+        };
     }
 
 }
