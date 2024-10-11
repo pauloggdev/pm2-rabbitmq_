@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "start": "nodemon --watch 'src/**/*.ts' --exec 'tsc && node dist/index.js'",
+    "start": "nodemon src/index.ts",
     "start-consumer": "pm2 start -x --interpreter ts-node src/consumers/validator-student-registration.ts"
   },
   "keywords": [],
@@ -41,6 +41,6 @@
     "jest": "^29.7.0",
     "nodemon": "^3.1.7",
     "ts-jest": "^29.2.5",
-    "typescript": "^5.6.2"
+    "typescript": "^5.6.3"
   }
 }

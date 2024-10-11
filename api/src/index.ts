@@ -44,7 +44,6 @@ app.post('/enrollStudent', async function (req: any, res: any) {
 app.get('/getAllStudents', async function (req: any, res: any) {
     const page = parseInt(req.query.page) || 1; 
     const search = req.query.search || null;
-    console.log(search)
     const studentRepository = new StudentRepositoryDatabase(mysqlConnection);
     const getAllStudents = new GetAllStudents(studentRepository);
     const data = await getAllStudents.execute(page, search);
@@ -63,7 +62,6 @@ app.post('/registerStudent', async function (req: any, res: any) {
     res.json({ success: 'sucess' })
 })
 app.put('/validatorStudentRegistration', async function (req: any, res: any) {
-
     const studentRepository = new StudentRepositoryDatabase(mysqlConnection);
     const matriculaRepository = new MatriculaRepositoryDatabase(mysqlConnection);
     const validatorStudent = new ValidatorStudentRegistration(matriculaRepository, studentRepository);
@@ -75,7 +73,6 @@ app.put('/validatorStudentRegistration', async function (req: any, res: any) {
     res.json({ success: 'sucess' })
 })
 const PORT = 3000;
-
 app.listen(PORT, () => {
     console.log(`Rodando o servidor localhost:${PORT}`);
 });
