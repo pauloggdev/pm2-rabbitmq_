@@ -44,6 +44,7 @@ app.post('/enrollStudent', async function (req: any, res: any) {
 app.get('/getAllStudents', async function (req: any, res: any) {
     const page = parseInt(req.query.page) || 1; 
     const search = req.query.search || null;
+    console.log(search)
     const studentRepository = new StudentRepositoryDatabase(mysqlConnection);
     const getAllStudents = new GetAllStudents(studentRepository);
     const data = await getAllStudents.execute(page, search);

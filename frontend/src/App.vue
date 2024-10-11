@@ -28,7 +28,7 @@ export default {
   methods: {
     async getAllStudents() {
       const responseData = await axios.get('http://localhost:3000/getAllStudents');
-      const students = responseData.data.map(response => ({
+      const students = responseData.data.students.map(response => ({
         ...response, // Mantém todas as propriedades do objeto original
         docBI: this.transformBlob(response.docBI.data)
       }));

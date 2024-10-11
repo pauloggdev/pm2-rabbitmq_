@@ -31,7 +31,7 @@ export default class StudentRepositoryDatabase implements StudentRepository {
             student.getPassword()
         ]);
     }
-    async getAll(page: any = 1, search: any = null): Promise<any> {
+    async getAll(page: any = 1, search:any): Promise<any> {
         const limit: any = 3;
         const searchTerm = `%${search}%`;
         const offset = (page - 1) * limit; // Cálculo do offset
@@ -39,13 +39,11 @@ export default class StudentRepositoryDatabase implements StudentRepository {
         const totalCount = totalCountRow.total;
         let queryParams = [limit, offset];
         let query = `SELECT * FROM students`;
-        if (search.letter) {
-            console.log('fdafdafd')
+        if (search) {
             query += ` WHERE nome LIKE ?`;
-            queryParams.push(searchTerm);
+            queryParams.unshift(searchTerm);
         }
         query += ` LIMIT ? OFFSET ?`;
-        console.log(query);
         const studentsData = await this.connection.query(query, queryParams);
         const totalPages = Math.ceil(totalCount / limit);
         return {

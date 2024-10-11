@@ -2,7 +2,7 @@
 <div class="candidatura">
     <h1>Candidatura</h1>
     <logout />
-    <ModalAlert  @close="closeModal" :visible="isModalVisible"/>
+    <ModalAlert @close="closeModal" :visible="isModalVisible" />
     <div class="form-candidatura">
         <form>
             <input type="text" v-model="candidatura.nome" /><br><br>
@@ -36,7 +36,7 @@ export default {
                 docBI: null
             },
             isLoading: false,
-            isModalVisible:false
+            isModalVisible: false
         }
     },
     methods: {
@@ -56,6 +56,10 @@ export default {
                     this.isLoading = false;
                     this.isModalVisible = true;
                     this.candidatura = {}
+                    this.$router.push({
+                        name: "Home"
+                    })
+
                 }
             } catch (error) {
                 this.isLoading = false;
@@ -65,7 +69,7 @@ export default {
         onFileChange() {
             this.candidatura.docBI = event.target.files[0]; // Armazena o arquivo selecionado
         },
-        closeModal(){
+        closeModal() {
             this.isModalVisible = false;
         }
     }

@@ -26,7 +26,6 @@ const isAuthenticated = (to, from, next) => {
   const token = localStorage.getItem('token');
   const isAuthenticated =!!token; 
   if (isAuthenticated) {
-  
     next({ name: 'Home' });
   } else {
     // Se não autenticado, permite a navegação
