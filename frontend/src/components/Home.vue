@@ -1,17 +1,22 @@
 <template>
-<div id="home">
-    <h1>Home</h1>
-    <logout />
-    <input type="text" v-model="search"/>
-    <iframe id="blobPdf" v-for="(student, index) in students" :key="index" width="500" height="600" :src="student.docBI"></iframe>
-    <Pagination :currentPage="currentPage" :totalPages="totalPages" @page-changed="getAllStudents"/>
-</div>
+    <div id="home">
+        <h1>Home</h1>
+        <logout />
+        <div style="margin-bottom: 15px">
+            <input type="text" v-model="search" placeholder="search" />
+        </div>
+        <iframe id="blobPdf" v-for="(student, index) in students" :key="index" width="500" height="600"
+            :src="student.docBI"></iframe>
+        <Pagination :currentPage="currentPage" :totalPages="totalPages" @page-changed="getAllStudents" />
+    </div>
 </template>
 
 <script>
 import axios from 'axios';
 import Logout from "@/components/Logout.vue"
 import Pagination from '@/components/Pagination.vue';
+import { debounce } from 'lodash'; // Se estiver usando Lodash
+
 
 export default {
     components: {
@@ -22,24 +27,36 @@ export default {
     name: 'Home',
     data() {
         return {
-            search: '',
+            searchQuery: '',
             students: [],
             currentPage: 1,
             totalPages: 1,
         }
     },
+    computed: {
+        search: {
+            get() {
+                return this.searchQuery;
+            },
+            set: debounce(function (value) {
+                this.searchQuery = value;
+                this.getAllStudents();
+            }, 1000),
+        }
+    },
     mounted() {
         this.getAllStudents();
     },
+    /** 
     watch: {
         search: {
             deep: true,
-            handler: function(newVal, oldVal) {
+            handler: function (newVal, oldVal) {
                 this.getAllStudents(); // Atualizar a lista de estudantes sempre que a busca é alterada
             }
         }
-
     },
+    */
 
     methods: {
         async logout() {
@@ -48,7 +65,7 @@ export default {
         },
         async getAllStudents(page = 1) {
             this.currentPage = page;
-            const responseData = await axios.get(`http://localhost:3000/getAllStudents?page=${page}&search=${this.search}`);
+            const responseData = await axios.get(`http://localhost:3000/getAllStudents?page=${page}&search=${this.searchQuery}`);
             const students = responseData.data.students.map(response => ({
                 ...response, // Mantém todas as propriedades do objeto original
                 docBI: this.transformBlob(response.docBI.data)

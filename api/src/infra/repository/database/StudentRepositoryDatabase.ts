@@ -47,9 +47,9 @@ export default class StudentRepositoryDatabase implements StudentRepository {
         const studentsData = await this.connection.query(query, queryParams);
         const totalPages = Math.ceil(totalCount / limit);
         return {
-            students: studentsData, 
-            totalPages: totalPages, 
-            currentPage: page 
+            students: studentsData, // Dados dos estudantes
+            totalPages: totalPages,  // Número total de páginas
+            currentPage: page        // Página atual
         };
     }
 

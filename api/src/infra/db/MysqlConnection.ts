@@ -25,7 +25,7 @@ export default class MysqlConnection implements Connection {
     }
 
     async query(sql: string, params: any[] | null) {
-        return new Promise((resolve, reject) => {
+     return new Promise((resolve, reject) => {
             this.connection.query(sql, params, (error: any, results: any) => {
                 if (error) {
                     return reject(error);

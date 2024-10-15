@@ -6,6 +6,7 @@ import axios from 'axios';
 
 Vue.config.productionTip = false
 
+
 // Configura Axios para capturar erro 401
 // axios.interceptors.response.use(
 //   response => response, // Se a resposta for sucesso, continue normalmente

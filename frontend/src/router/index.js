@@ -45,9 +45,7 @@ const routes = [
   {
     path: '/candidatura',
     name: 'Candidatura',
-    component: Candidatura,
-    meta: { requiresAuth: true },
-    beforeEnter: requireAuth
+    component: Candidatura
   },
   {
     path: '/login',
